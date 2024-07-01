@@ -19,10 +19,10 @@
            @keyup.enter="handleQuery"
          />
        </el-form-item>
-       <el-form-item label="联系电话" prop="phoneNumber">
+       <el-form-item label="电话" prop="phoneNumber">
          <el-input
            v-model="queryParams.phoneNumber"
-           placeholder="请输入联系电话"
+           placeholder="请输入电话"
            clearable
            style="width: 200px"
            @keyup.enter="handleQuery"
@@ -69,8 +69,6 @@
            type="warning"
            plain
            icon="Download"
-           @click="handleExport"
-           v-hasPermi="['system:tenant:export']"
          >导出</el-button>
        </el-col>
        <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
@@ -78,12 +76,11 @@
  
      <el-table v-loading="loading" :data="tenantList" @selection-change="handleSelectionChange">
        <el-table-column type="selection" width="55" align="center" />
-       <el-table-column label="租户编号" align="center" prop="tenantId" />
-       <el-table-column label="租户名称" align="center" prop="tenantName" />
+       <el-table-column label="租户标识" align="center" prop="tenantId" />
        <el-table-column label="联系人" align="center" prop="contactPerson" />
-       <el-table-column label="联系电话" align="center" prop="phoneNumber" />
-       <el-table-column label="管理员ID" align="center" prop="admin" />
-       <el-table-column label="备注" align="center" prop="remark" />
+       <el-table-column label="电话" align="center" prop="phoneNumber" />
+       <el-table-column label="租户名称" align="center" prop="tenantName" />
+       <el-table-column label="管理员" align="center" prop="admin" />
        <el-table-column label="操作" width="180" align="center" class-name="small-padding fixed-width">
          <template #default="scope">
            <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:tenant:edit']">修改</el-button>
@@ -109,11 +106,12 @@
          <el-form-item label="联系人" prop="contactPerson">
            <el-input v-model="form.contactPerson" placeholder="请输入联系人" />
          </el-form-item>
-         <el-form-item label="联系电话" prop="phoneNumber">
-           <el-input v-model="form.phoneNumber" placeholder="请输入联系电话" />
+         <el-form-item label="电话" prop="phoneNumber">
+           <el-input v-model="form.phoneNumber" placeholder="请输入电话" />
          </el-form-item>
-         <el-form-item label="管理员ID" prop="adminUserId">
-           <el-input v-model="form.admin" placeholder="请输入管理员ID" />
+         <el-form-item label="管理员" prop="admin">
+           <el-input v-model="form.admin" placeholder="请输入管理员" />
+           <p class="text-gray">默认密码为该租户创建后的租户标识</p>
          </el-form-item>
          <el-form-item label="备注" prop="remark">
            <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
@@ -156,8 +154,8 @@
    rules: {
      tenantName: [{ required: true, message: "租户名称不能为空", trigger: "blur" }],
      contactPerson: [{ required: true, message: "联系人不能为空", trigger: "blur" }],
-     phoneNumber: [{ required: true, message: "联系电话不能为空", trigger: "blur" }],
-     admin: [{ required: true, message: "管理员ID不能为空", trigger: "blur" }]
+     phoneNumber: [{ required: true, message: "电话不能为空", trigger: "blur" }],
+     admin: [{ required: true, message: "管理员不能为空", trigger: "blur" }]
    }
  });
  
@@ -253,7 +251,7 @@
  /** 删除按钮操作 */
  function handleDelete(row) {
    const tenantIds = row.tenantId || ids.value;
-   proxy.$modal.confirm('是否确认删除租户编号为"' + tenantIds + '"的数据项？').then(function() {
+   proxy.$modal.confirm('是否确认删除租户标识为"' + tenantIds + '"的数据项？').then(function() {
      return delTenant(tenantIds);
    }).then(() => {
      getList();

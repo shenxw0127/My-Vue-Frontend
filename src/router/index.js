@@ -157,7 +157,22 @@ export const dynamicRoutes = [
         meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
       }
     ]
-  }
+  },
+  {
+    path: '/system/course',
+    component: Layout,
+    redirect: 'noRedirect',
+    name: 'Course',
+    meta: { title: '课程管理', icon: 'education' },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/system/course/index'),
+        name: 'CourseManagement',
+        meta: { title: '课程管理', icon: 'education', noCache: true }
+      }
+    ]
+  },
 ]
 
 const router = createRouter({

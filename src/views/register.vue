@@ -168,17 +168,6 @@
             <template #prefix><svg-icon icon-class="contact" class="el-input__icon input-icon" /></template>
           </el-input>
         </el-form-item>
-        <el-form-item prop="phoneNumber">
-          <el-input
-              v-model="tenantForm.phoneNumber"
-              type="text"
-              size="large"
-              auto-complete="off"
-              placeholder="电话"
-          >
-            <template #prefix><svg-icon icon-class="phone" class="el-input__icon input-icon" /></template>
-          </el-input>
-        </el-form-item>
         <el-form-item>
           <el-button
               :loading="loading"
@@ -233,7 +222,6 @@ const userForm = ref({
 const tenantForm = ref({
   tenantName: "",
   contactPerson: "",
-  phoneNumber: ""
 });
 
 const equalToPassword = (rule, value, callback) => {
@@ -284,9 +272,6 @@ const tenantRules = {
   contactPerson: [
     { required: true, trigger: "blur", message: "请输入联系人" }
   ],
-  phoneNumber: [
-    { required: true, trigger: "blur", message: "请输入电话号码" }
-  ]
 };
 
 const codeUrl = ref("");
@@ -317,10 +302,12 @@ function handleRegister() {
   proxy.$refs.tenantRef.validate(valid => {
     if (valid) {
       loading.value = true;
+
+      // 构造单一结构体包含所有属性
       const payload = {
-        register: registerForm.value,
-        user: userForm.value,
-        tenant: tenantForm.value
+        ...registerForm.value,
+        ...userForm.value,
+        ...tenantForm.value
       };
 
       register(payload).then(res => {
@@ -340,6 +327,7 @@ function handleRegister() {
     }
   });
 }
+
 
 function handleBackToLogin() {
   router.push("/login");

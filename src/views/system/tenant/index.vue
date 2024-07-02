@@ -98,11 +98,25 @@
      />
  
      <!-- 添加或修改租户对话框 -->
-     <el-dialog :title="title" v-model="open" width="500px" append-to-body>
+     <el-dialog :title="title" v-model="open" width="800px" append-to-body>
        <el-form ref="tenantRef" :model="form" :rules="rules" label-width="80px">
          <el-form-item label="租户名称" prop="tenantName">
            <el-input v-model="form.tenantName" placeholder="请输入租户名称" />
          </el-form-item>
+         <el-form-item label="租户图标" prop="icon">
+          <!-- 租户图标上传组件 -->
+          <el-upload
+              multiple
+              :before-upload="handleImageUpload"
+              list-type="picture-card"
+              :file-list="imageFileList"
+              :on-remove="handleImageRemove"
+              :auto-upload="true"
+              :on-preview="handlePictureCardPreview"
+          >
+            <el-icon class="avatar-uploader-icon"><plus /></el-icon>
+          </el-upload>
+        </el-form-item>
          <el-form-item label="联系人" prop="contactPerson">
            <el-input v-model="form.contactPerson" placeholder="请输入联系人" />
          </el-form-item>
@@ -114,7 +128,7 @@
            <p class="text-gray">默认密码为该租户创建后的租户标识</p>
          </el-form-item>
          <el-form-item label="备注" prop="remark">
-           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+           <editor v-model="form.remark" :min-height="192" />
          </el-form-item>
        </el-form>
        <template #footer>
@@ -141,6 +155,9 @@
  const multiple = ref(true);
  const total = ref(0);
  const title = ref("");
+ const imageFileList = ref([]);
+ const quillEditorRef = ref(null);
+
  
  const data = reactive({
    form: {},
@@ -173,6 +190,7 @@
  
  /** 取消按钮 */
  function cancel() {
+   imageFileList.value = [];
    open.value = false;
    reset();
  }
@@ -185,7 +203,8 @@
      contactPerson: undefined,
      phoneNumber: undefined,
      admin: undefined,
-     remark: undefined
+     remark: undefined,
+     icon: undefined
    };
    proxy.resetForm("tenantRef");
  }
@@ -213,7 +232,7 @@
  function handleAdd() {
    reset();
    open.value = true;
-   title.value = "添加租户";
+   title.value = "添加租户管理";
  }
  
  /** 修改按钮操作 */
@@ -223,7 +242,12 @@
    getTenant(tenantId).then(response => {
      form.value = response.data;
      open.value = true;
-     title.value = "修改租户";
+     title.value = "修改租户管理";
+     imageFileList.value=[];
+     if(form.value.icon){
+       imageFileList.value.push({name:'icon',url:form.value.icon});
+     }
+     console.log('Image print, form.icon:', response.data.remark);  // 添加调试代码
    });
  }
  
@@ -231,22 +255,32 @@
  function submitForm() {
    proxy.$refs["tenantRef"].validate(valid => {
      if (valid) {
-       if (form.value.tenantId != undefined) {
+        // 确保备注内容为HTML字符串
+        // const quillInstance = quillEditorRef.value && quillEditorRef.value.getQuill();
+        // if(quillInstance) {
+        //   form.value.remark = quillInstance.root.innerHTML;
+        // }
+        console.log("Form data being submitted:", form.value);  // 检查提交的数据
+
+        if (form.value.tenantId != undefined) {
          updateTenant(form.value).then(response => {
            proxy.$modal.msgSuccess("修改成功");
            open.value = false;
            getList();
          });
+         imageFileList.value = [];
        } else {
          addTenant(form.value).then(response => {
            proxy.$modal.msgSuccess("新增成功");
            open.value = false;
            getList();
          });
+         imageFileList.value = [];
        }
      }
    });
  }
+
  
  /** 删除按钮操作 */
  function handleDelete(row) {
@@ -265,7 +299,35 @@
      ...queryParams.value
    }, `tenant_${new Date().getTime()}.xlsx`);
  }
- 
+ /** 图片上传处理 */
+function handleImageUpload(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    // 删除旧的封面
+    imageFileList.value = [];
+    form.value.icon = '';
+    // 添加新的封面
+    form.value.icon = e.target.result;  // 将Base64字符串存储到表单字段中
+    imageFileList.value.push({ name: file.name, url: e.target.result });
+    console.log('Image uploaded, form.icon:', form.value.icon);  // 添加调试代码
+  };
+  reader.readAsDataURL(file);
+  return false;  // 阻止默认的上传行为
+}
+
+/** 图片移除处理 */
+function handleImageRemove(file, fileList) {
+  imageFileList.value = fileList;
+  if (fileList.length === 0) {
+    form.value.icon = '';  // 如果移除所有图片，清空表单字段
+  }
+}
+
+/** 图片预览处理 */
+function handlePictureCardPreview(file) {
+  const imgWindow = window.open(file.url);
+  imgWindow.document.write('<img src="' + file.url + '" />');
+}
  getList();
  </script>
  

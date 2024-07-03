@@ -42,3 +42,30 @@ export function delCourse(courseId) {
         method: 'delete'
     })
 }
+// 审核课程
+export function auditCourse(courseId) {
+    return request({
+        url: `/system/course/audit/${courseId}`,
+        method: 'put'
+    })
+}
+
+// 取消审核课程
+export function unauditCourse(courseId) {
+    return request({
+        url: `/system/course/unaudit/${courseId}`,
+        method: 'put'
+    })
+}
+export const useCourseStore = defineStore('course', {
+    // 省略其他状态和方法
+    actions: {
+        // 更新课程状态的方法
+        updateCourseStatus(courseId, auditStatus) {
+            const course = this.courses.find(c => c.courseId === courseId);
+            if (course) {
+                course.auditStatus = auditStatus;
+            }
+        }
+    }
+});

@@ -79,6 +79,13 @@
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="审核状态" align="center" prop="auditStatus">
+        <template #default="scope">
+          <el-tag :type="scope.row.auditStatus ? 'success' : 'info'">
+            {{ scope.row.auditStatus ? '已审核' : '未审核' }}
+          </el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="180" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
           <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:course:edit']">修改</el-button>
@@ -160,20 +167,21 @@
 
 <script setup name="Course">
 import { listCourse, addCourse, delCourse, getCourse, updateCourse } from "@/api/system/course";
-import { ref, reactive, toRefs, getCurrentInstance } from "vue";
+import { ref, reactive, toRefs, getCurrentInstance,onMounted } from "vue";
 import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
+
 const { proxy } = getCurrentInstance();
 
-const courseList = ref([]);
-const open = ref(false);
 const loading = ref(true);
+const courseList = ref([]);
+const total = ref(0)
+const open = ref(false);
 const showSearch = ref(true);
 const ids = ref([]);
 const single = ref(true);
 const multiple = ref(true);
-const total = ref(0);
 const title = ref("");
 const imageFileList = ref([]);
 const videoFileList = ref([]);
@@ -207,15 +215,22 @@ const data = reactive({
 
 const { queryParams, form, rules } = toRefs(data);
 
-/** 查询课程列表 */
+
+// Fetches and updates the course list from the API
 function getList() {
   loading.value = true;
   listCourse(queryParams.value).then(response => {
     courseList.value = response.rows;
     total.value = response.total;
     loading.value = false;
+  }).catch(() => {
+    loading.value = false;
+    // Handle error, e.g., show a notification
   });
 }
+
+onMounted(getList);
+
 /** 取消按钮 */
 function cancel() {
   open.value = false;

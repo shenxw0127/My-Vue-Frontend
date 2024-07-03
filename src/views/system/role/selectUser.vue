@@ -133,8 +133,10 @@ function handleSelectUser() {
   }
   authUserSelectAll({ roleId: roleId, userIds: uIds }).then(res => {
     proxy.$modal.msgSuccess(res.msg);
-    visible.value = false;
-    emit("ok");
+    if (res.code === 200) {
+      visible.value = false;
+      emit("ok");
+    }
   });
 }
 

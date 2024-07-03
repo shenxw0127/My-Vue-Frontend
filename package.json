@@ -2,6 +2,7 @@
   "name": "ruoyi",
   "version": "3.8.7",
   "description": "测盟汇管理系统",
+  "author": "测盟汇",
   "license": "MIT",
   "type": "module",
   "scripts": {

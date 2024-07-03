@@ -1,10 +1,10 @@
 <template>
    <div class="app-container">
      <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch">
-       <el-form-item label="租户名称" prop="tenantName">
+      <el-form-item label="租户标识" prop="tenantID">
          <el-input
-           v-model="queryParams.tenantName"
-           placeholder="请输入租户名称"
+           v-model="queryParams.tenantID"
+           placeholder="请输入租户标识"
            clearable
            style="width: 200px"
            @keyup.enter="handleQuery"
@@ -23,6 +23,15 @@
          <el-input
            v-model="queryParams.phoneNumber"
            placeholder="请输入电话"
+           clearable
+           style="width: 200px"
+           @keyup.enter="handleQuery"
+         />
+       </el-form-item>
+       <el-form-item label="租户名称" prop="tenantName">
+         <el-input
+           v-model="queryParams.tenantName"
+           placeholder="请输入租户名称"
            clearable
            style="width: 200px"
            @keyup.enter="handleQuery"
@@ -166,7 +175,8 @@
      pageSize: 10,
      tenantName: undefined,
      contactPerson: undefined,
-     phoneNumber: undefined
+     phoneNumber: undefined,
+     tenantID: undefined
    },
    rules: {
      tenantName: [{ required: true, message: "租户名称不能为空", trigger: "blur" }],

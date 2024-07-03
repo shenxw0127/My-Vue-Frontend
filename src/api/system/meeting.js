@@ -1,4 +1,4 @@
-import request from '../../../../../RuoYi-Vue3-master/src/utils/request.js'
+import request from '../../../../RuoYi-Vue3-master/src/utils/request.js'
 
 // 查询会议列表
 export function listMeeting(query) {

@@ -103,7 +103,7 @@
     />
 
     <!-- 添加或修改课程对话框 -->
-    <el-dialog :title="title" v-model="open" width="500px" append-to-body>
+    <el-dialog :title="title" v-model="open" width="800px" append-to-body>
       <el-form ref="courseRef" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="课程名称" prop="courseName">
           <el-input v-model="form.courseName" placeholder="请输入课程名称" />
@@ -145,14 +145,7 @@
           <el-input-number v-model="form.courseSort" controls-position="right" :min="0" />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <!-- 富文本编辑器组件 -->
-          <quill-editor
-              ref="quillEditorRef"
-              v-model:content="form.remark"
-              contentType="html"
-              :options="options"
-              :style="styles"
-          />
+          <editor v-model="form.remark" :min-height="192" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -170,6 +163,7 @@ import { listCourse, addCourse, delCourse, getCourse, updateCourse } from "@/api
 import { ref, reactive, toRefs, getCurrentInstance,onMounted } from "vue";
 import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
+import {addTenant, getTenant, updateTenant} from "@/api/system/tenant.js";
 
 
 const { proxy } = getCurrentInstance();
@@ -186,6 +180,7 @@ const title = ref("");
 const imageFileList = ref([]);
 const videoFileList = ref([]);
 const quillEditorRef = ref(null);
+const submitting = ref(false);
 const styles = ref({
   height: '400px',
 });
@@ -286,45 +281,37 @@ function handleUpdate(row) {
     form.value = response.data;
     open.value = true;
     title.value = "修改课程";
+    imageFileList.value = [];
+    videoFileList.value = [];
+    if(form.value.courseCover||form.value.courseVideo){
+      imageFileList.value.push({name:'courseCover',url:form.value.courseCover});
+      videoFileList.value.push({name:'courseVideo',url:form.value.courseVideo});
+    }
+    console.log('Image print, form.icon:', response.data.remark);  // 添加调试代码
   });
 }
 /** 提交按钮 */
-/** 提交按钮 */
 function submitForm() {
-  proxy.$refs["courseRef"].validate(valid => {
+  proxy.$refs["courseRef"].validate(async valid => {
     if (valid) {
-      // 确保备注内容为HTML字符串
-      const quillInstance = quillEditorRef.value && quillEditorRef.value.getQuill();
-      if (quillInstance) {
-        form.value.remark = quillInstance.root.innerHTML;
-      }
-      console.log("Form data being submitted:", form.value);  // 检查提交的数据
-
-      // 构建简化的数据对象，只包含必要的属性
-      const submitData = {
-        courseId: form.value.courseId,
-        courseName: form.value.courseName,
-        courseDescription: form.value.courseDescription,
-        courseCover: form.value.courseCover,
-        courseVideo: form.value.courseVideo,
-        courseAuthor: form.value.courseAuthor,
-        courseSort: form.value.courseSort,
-        remark: form.value.remark
-      };
-
-      let jsonForm = JSON.stringify(submitData);
-      if (form.value.courseId != null) {
-        updateCourse(jsonForm).then(response => {
+      submitting.value = true; // Start submission
+      try {
+        if (form.value.courseId != undefined) {
+          await updateCourse(form.value);
           proxy.$modal.msgSuccess("修改成功");
-          open.value = false;
-          getList();
-        });
-      } else {
-        addCourse(jsonForm).then(response => {
+        } else {
+          await addCourse(form.value);
           proxy.$modal.msgSuccess("新增成功");
-          open.value = false;
-          getList();
-        });
+        }
+        open.value = false;
+        getList();
+      } catch (error) {
+        console.error("Submission failed:", error);
+        proxy.$modal.msgError("提交失败，请稍后再试");
+      } finally {
+        submitting.value = false; // End submission
+        imageFileList.value = [];
+        videoFileList.value = [];
       }
     }
   });

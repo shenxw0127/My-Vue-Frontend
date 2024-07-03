@@ -297,9 +297,9 @@ function submitForm() {
 
 /** 删除按钮操作 */
 function handleDelete(row) {
-  const informationIds = row.informationId ? [row.informationId] : ids.value;
+  const informationIds = row.infoId ? [row.infoId] : ids.value;
   proxy.$modal.confirm('是否确认删除资讯编号为 "' + informationIds.join(", ") + '" 的数据项？').then(function() {
-    return delInformation(informationIds);
+    return delInfo(informationIds);
   }).then(() => {
     getList();
     proxy.$modal.msgSuccess("删除成功");

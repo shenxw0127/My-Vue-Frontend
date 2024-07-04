@@ -181,6 +181,7 @@ const data = reactive({
   rules: {
     title: [{ required: true, message: "新闻标题不能为空", trigger: "blur" }],
     content: [{ required: true, message: "新闻内容不能为空", trigger: "blur" }],
+    summary: [{ required: true, message: "新闻简介不能为空", trigger: "blur" }],
     image: [{ required: true, message: "新闻图片不能为空", trigger: "blur" }],
   }
 });

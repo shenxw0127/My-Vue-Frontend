@@ -81,7 +81,6 @@
       </el-form>
 
       <el-form ref="userRef" :model="userForm" :rules="userRules" class="register-form" v-if="activeStep === 1">
-        <h3 class="title">用户信息</h3>
         <el-form-item prop="phoneNumber">
           <el-input
               v-model="userForm.phoneNumber"
@@ -142,7 +141,6 @@
       </el-form>
 
       <el-form ref="tenantRef" :model="tenantForm" :rules="tenantRules" class="register-form" v-if="activeStep === 2">
-        <h3 class="title">租户信息</h3>
         <el-form-item prop="tenantName">
           <el-input
               v-model="tenantForm.tenantName"
@@ -357,7 +355,7 @@ getCode();
   flex-direction: column;
   align-items: center;
   background: #ffffff;
-  width: 600px;
+  width: 500px;
   border-radius: 8px;
   padding: 40px;
 }

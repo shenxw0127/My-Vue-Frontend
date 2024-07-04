@@ -2,7 +2,7 @@
   <div class="register">
     <div class="register-container">
       <h3 class="title">测盟汇管理系统</h3>
-      <el-steps :active="activeStep" align-center>
+      <el-steps :active="activeStep" align-center class="custom-steps">
         <el-step title="账号信息"></el-step>
         <el-step title="用户信息"></el-step>
         <el-step title="租户信息"></el-step>
@@ -45,22 +45,19 @@
           </el-input>
         </el-form-item>
         <el-form-item prop="code" v-if="captchaEnabled">
-          <el-row gutter="10">
-            <el-col :span="16">
-              <el-input
-                  size="large"
-                  v-model="registerForm.code"
-                  auto-complete="off"
-                  placeholder="验证码"
-                  @keyup.enter="handleNext"
-              >
-                <template #prefix><svg-icon icon-class="validCode" class="el-input__icon input-icon" /></template>
-              </el-input>
-            </el-col>
-            <el-col :span="8">
-              <img :src="codeUrl" @click="getCode" class="register-code-img"/>
-            </el-col>
-          </el-row>
+          <el-input
+              v-model="registerForm.code"
+              size="large"
+              auto-complete="off"
+              placeholder="验证码"
+              style="width: 63%"
+              @keyup.enter="handleRegister"
+          >
+            <template #prefix><svg-icon icon-class="validCode" class="el-input__icon input-icon" /></template>
+          </el-input>
+          <div class="register-code">
+            <img :src="codeUrl" @click="getCode" class="register-code-img"/>
+          </div>
         </el-form-item>
         <el-form-item>
           <el-button
@@ -190,7 +187,7 @@
     </div>
     <!--  底部  -->
     <div class="el-register-footer">
-      <span>Copyright © 2018-2024 ruoyi.vip All Rights Reserved.</span>
+      <span>Copyright © 2024 测盟汇 All Rights Reserved.</span>
     </div>
   </div>
 </template>
@@ -371,7 +368,10 @@ getCode();
 }
 
 .register-form {
-  width: 100%;
+  border-radius: 6px;
+  background: #ffffff;
+  width: 380px;
+  padding: 25px 25px 5px 25px;
   .el-input {
     height: 40px;
     input {
@@ -380,7 +380,7 @@ getCode();
   }
   .input-icon {
     height: 39px;
-    width: 14px;
+    width: 12px;
     margin-left: 0px;
   }
 }
@@ -413,5 +413,10 @@ getCode();
 .register-code-img {
   height: 40px;
   padding-left: 12px;
+
+.custom-steps .el-step {
+    margin: 0 0px; /* 调整这个值来增大或减小间距 */
+}
+
 }
 </style>

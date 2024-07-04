@@ -2,28 +2,28 @@
   <div class="app-container">
     <!-- 搜索表单 -->
     <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch">
-      <el-form-item label="资讯标题" prop="title">
+      <el-form-item label="新闻标题" prop="title">
         <el-input
             v-model="queryParams.title"
-            placeholder="请输入资讯标题"
+            placeholder="请输入新闻标题"
             clearable
             style="width: 200px"
             @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="资讯作者" prop="author">
+      <el-form-item label="作者" prop="author">
         <el-input
             v-model="queryParams.author"
-            placeholder="请输入资讯作者"
+            placeholder="请输入作者"
             clearable
             style="width: 200px"
             @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="租户" prop="tenant">
+      <el-form-item label="新闻简介" prop="summary">
         <el-input
-            v-model="queryParams.tenant"
-            placeholder="请输入租户"
+            v-model="queryParams.summary"
+            placeholder="请输入新闻简介"
             clearable
             style="width: 200px"
             @keyup.enter="handleQuery"
@@ -70,13 +70,11 @@
 
     <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="资讯编号" align="center" prop="infoId" />
-      <el-table-column label="资讯标题" align="center" prop="title" />
-      <el-table-column label="资讯作者" align="center" prop="author" />
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
-        <template #default="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
-        </template>
+      <el-table-column label="编号" align="center" prop="infoId" />
+      <el-table-column label="新闻标题" align="center" prop="title" />
+      <el-table-column label="作者" align="center" prop="author" />
+      <el-table-column label="新闻简介" align="center" prop="summary">
+
       </el-table-column>
       <el-table-column label="操作" width="180" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
@@ -97,19 +95,10 @@
     <!-- 添加或修改资讯对话框 -->
     <el-dialog :title="title" v-model="open" width="800px" append-to-body>
       <el-form ref="infoRef" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="资讯标题" prop="title">
-          <el-input v-model="form.title" placeholder="请输入资讯标题" />
+        <el-form-item label="新闻标题" prop="title">
+          <el-input v-model="form.title" placeholder="请输入新闻标题" />
         </el-form-item>
-        <el-form-item label="资讯简介" prop="summary">
-          <el-input v-model="form.summary" placeholder="请输入资讯简介" />
-        </el-form-item>
-        <el-form-item label="资讯作者" prop="author">
-          <el-input v-model="form.author" placeholder="请输入资讯作者" />
-        </el-form-item>
-        <el-form-item label="租户" prop="tenant">
-          <el-input v-model="form.tenant" placeholder="请输入租户" />
-        </el-form-item>
-        <el-form-item label="资讯图片" prop="image">
+        <el-form-item label="新闻图片" prop="image">
           <!-- 资讯图片上传组件 -->
           <el-upload
               multiple
@@ -123,13 +112,22 @@
             <el-icon class="avatar-uploader-icon"><plus /></el-icon>
           </el-upload>
         </el-form-item>
-        <el-form-item label="资讯内容" prop="content">
+        <el-form-item label="新闻内容" prop="content">
           <!-- 富文本编辑器组件 -->
           <el-form-item>
             <editor v-model="form.content" :min-height="192"/>
           </el-form-item>
         </el-form-item>
       </el-form>
+      <el-form-item label="作者" prop="author">
+        <el-input v-model="form.author" placeholder="请输入新闻作者" />
+      </el-form-item>
+      <el-form-item label="新闻简介" prop="summary">
+        <el-input v-model="form.summary" placeholder="请输入新闻简介" />
+      </el-form-item>
+      <el-form-item label="租户" prop="tenant">
+        <el-input v-model="form.tenant" placeholder="请输入租户" />
+      </el-form-item>
       <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -181,9 +179,9 @@ const data = reactive({
     tenant: undefined
   },
   rules: {
-    title: [{ required: true, message: "资讯标题不能为空", trigger: "blur" }],
-    author: [{ required: true, message: "资讯作者不能为空", trigger: "blur" }],
-    tenant: [{ required: true, message: "租户不能为空", trigger: "blur" }]
+    title: [{ required: true, message: "新闻标题不能为空", trigger: "blur" }],
+    content: [{ required: true, message: "新闻内容不能为空", trigger: "blur" }],
+    image: [{ required: true, message: "新闻图片不能为空", trigger: "blur" }],
   }
 });
 

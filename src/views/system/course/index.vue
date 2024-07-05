@@ -115,6 +115,7 @@
           <el-input v-model="form.courseAuthor" placeholder="请输入课程作者" />
         </el-form-item>
         <el-form-item label="课程封面" prop="courseCover">
+          <div class="upload-section">
           <!-- 课程封面上传组件 -->
           <el-upload
               multiple
@@ -127,8 +128,11 @@
           >
             <el-icon class="avatar-uploader-icon"><plus /></el-icon>
           </el-upload>
+          <div class="upload-tip">请上传大小不超过2MB的png/jpg/jpeg格式的图片文件</div>
+        </div>
         </el-form-item>
         <el-form-item label="课程视频" prop="courseVideo">
+          <div class="upload-section">
           <!-- 课程视频上传组件 -->
           <el-upload
               multiple
@@ -140,6 +144,8 @@
           >
             <el-icon class="avatar-uploader-icon"><plus /></el-icon>
           </el-upload>
+          <div class="upload-tip">请上传大小不超过50MB的doc/xls/ppt/pdf/mp4格式的视频文件</div>
+          </div>
         </el-form-item>
         <el-form-item label="课程排序" prop="courseSort">
           <el-input-number v-model="form.courseSort" controls-position="right" :min="0" />
@@ -161,10 +167,7 @@
 <script setup name="Course">
 import { listCourse, addCourse, delCourse, getCourse, updateCourse } from "@/api/system/course";
 import { ref, reactive, toRefs, getCurrentInstance,onMounted } from "vue";
-import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
-import {addTenant, getTenant, updateTenant} from "@/api/system/tenant.js";
-
 
 const { proxy } = getCurrentInstance();
 
@@ -390,13 +393,25 @@ function handleVideoRemove(file, fileList) {
   }
 }
 
-
-
 getList();
 </script>
 
 <style scoped>
 .upload-demo .el-icon-plus {
   font-size: 28px;
+}
+
+.upload-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 48%; /* Ensure consistent width */
+  margin-bottom: 20px; /* Add space between sections */
+}
+
+.upload-tip {
+  margin-top: 10px;
+  color: #606266;
+  font-size: 12px;
 }
 </style>

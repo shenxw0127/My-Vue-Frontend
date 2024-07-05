@@ -70,7 +70,7 @@
 
     <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="编号" align="center" prop="infoId" />
+      <!-- <el-table-column label="编号" align="center" prop="infoId" /> -->
       <el-table-column label="新闻标题" align="center" prop="title" />
       <el-table-column label="作者" align="center" prop="author" />
       <el-table-column label="新闻简介" align="center" prop="summary">

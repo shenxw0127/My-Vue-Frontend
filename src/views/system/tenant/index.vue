@@ -1,9 +1,9 @@
 <template>
    <div class="app-container">
      <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch">
-      <el-form-item label="租户标识" prop="tenantID">
+      <el-form-item label="租户标识" prop="tenantId">
          <el-input
-           v-model="queryParams.tenantID"
+           v-model="queryParams.tenantId"
            placeholder="请输入租户标识"
            clearable
            style="width: 200px"
@@ -176,7 +176,7 @@
      tenantName: undefined,
      contactPerson: undefined,
      phoneNumber: undefined,
-     tenantID: undefined
+     tenantId: undefined
    },
    rules: {
      tenantName: [{ required: true, message: "租户名称不能为空", trigger: "blur" }],
